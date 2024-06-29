@@ -1,5 +1,10 @@
 class HTMLNode:
     def __init__(self, tag=None, value=None, children=None, props=None):
+        print(f"HTMLNode __init__")
+        print(f"tag: {tag}")
+        print(f"value: {value}")
+        print(f"children: {children}")
+        print(f"props: {props}")
         self.tag = tag
         self.value = value
         self.children = children

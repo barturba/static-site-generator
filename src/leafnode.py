@@ -1,7 +1,9 @@
 from htmlnode import HTMLNode
 
 class LeafNode(HTMLNode):
-    def __init__(self, tag, value, children, props):
+    def __init__(self, tag=None, value=None, children=None, props=None):
+        if value is None:
+            raise ValueError("LeafNode must have a value")
         super().__init__(tag, value, children, props)
 
     def to_html(self):
