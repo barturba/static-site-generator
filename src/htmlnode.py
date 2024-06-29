@@ -7,8 +7,11 @@ class HTMLNode:
     def to_html(self):
         raise NotImplementedError()
     def props_to_html(self):
-        output = ""
-        if self.props.items():
-            for key, value in self.props.items():
-                output += f" {key}='{value}'"
-        return output + " "
+        if self.props is None:
+            return ""
+        props_html = ""
+        for key, value in self.props.items():
+            props_html+= f' {key}="{value}"'
+        return props_html
+    def __repr__(self):
+        return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
