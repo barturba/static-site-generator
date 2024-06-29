@@ -74,6 +74,32 @@ class TestParentNode(unittest.TestCase):
             '<div><p class="paragraph"><b>bold text</b>normal text<i>italic text</i>normal text</p></div>'
         )
 
+    def test_multiple_levels_of_nesting(self):
+        node = ParentNode(
+            "body",
+            [
+                ParentNode(
+                    "div",
+                    [
+                        ParentNode(
+                            "p",
+                            [
+                                LeafNode("b", "bold text"),
+                                LeafNode(None, "normal text"),
+                                LeafNode("i", "italic text"),
+                                LeafNode(None, "normal text"),
+                            ],
+                            {"class": "paragraph"},
+                        )
+                    ]
+                )
+            ]
+        )
+        self.assertEqual(
+            node.to_html(),
+            '<body><div><p class="paragraph"><b>bold text</b>normal text<i>italic text</i>normal text</p></div></body>'
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
