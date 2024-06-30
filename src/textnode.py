@@ -38,18 +38,6 @@ def text_node_to_html_node(node):
             return LeafNode("img", "", None, {"src": node.url, "alt": node.text})
         case _:
             raise ValueError("Invalid text_type")
-# Example:
-#
-# input:
-# node = TextNode("This is text with a `code block` word", text_type_text)
-# new_nodes = split_nodes_delimiter([node], "`", text_type_code)
-#
-# output:
-# [
-#     TextNode("This is text with a ", text_type_text),
-#     TextNode("code block", text_type_code),
-#     TextNode(" word", text_type_text),
-# ]
 
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
