@@ -1,7 +1,7 @@
 import unittest
 
 from leafnode import LeafNode
-from textnode import TextNode, extract_markdown_links, split_nodes_delimiter
+from textnode import TextNode, extract_markdown_links, split_nodes_delimiter, split_nodes_image, split_nodes_link
 from textnode import extract_markdown_images
 from textnode import text_node_to_html_node
 
@@ -141,6 +141,88 @@ class TestTextNode(unittest.TestCase):
             matches,
             [("link", "https://www.example.com"),
              ("another", "https://www.example.com/another")]
+        )
+
+    def test_split_nodes_image(self):
+        node = TextNode(
+            "This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another ![second image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png)",
+            text_type_text,
+        )
+
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with an ", text_type_text),
+                TextNode("image", text_type_image,
+                         "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+                TextNode(" and another ", text_type_text),
+                TextNode("second image", text_type_image,
+                         "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png"),
+            ]
+
+        )
+
+    def test_split_nodes_image_after(self):
+        node = TextNode(
+            "This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another ![second image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png) and text after.",
+            text_type_text,
+        )
+
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with an ", text_type_text),
+                TextNode("image", text_type_image,
+                         "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+                TextNode(" and another ", text_type_text),
+                TextNode("second image", text_type_image,
+                         "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png"),
+                TextNode(" and text after.", text_type_text),
+            ]
+
+        )
+
+    def test_split_nodes_link(self):
+        node = TextNode(
+            "This is text with a [link](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another [second link](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png)",
+            text_type_text,
+        )
+
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with a ", text_type_text),
+                TextNode("link", text_type_link,
+                         "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+                TextNode(" and another ", text_type_text),
+                TextNode("second link", text_type_link,
+                         "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png"),
+            ]
+
+        )
+
+    def test_split_nodes_text_after(self):
+        node = TextNode(
+            "This is text with a [text](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and another [second text](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png) and text after.",
+            text_type_text,
+        )
+
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with a ", text_type_text),
+                TextNode("text", text_type_link,
+                         "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+                TextNode(" and another ", text_type_text),
+                TextNode("second text", text_type_link,
+                         "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/3elNhQu.png"),
+                TextNode(" and text after.", text_type_text),
+            ]
+
         )
 
 
