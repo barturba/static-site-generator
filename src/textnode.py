@@ -10,6 +10,13 @@ text_type_code = "code"
 text_type_link = "link"
 text_type_image = "image"
 
+block_type_paragraph = "paragraph"
+block_type_heading = "heading"
+block_type_code = "code"
+block_type_quote = "quote"
+block_type_unordered_list = "unordered_list"
+block_type_ordered_list = "ordered_list"
+
 
 class TextNode:
     def __init__(self, text=None, text_type=None, url=None):
@@ -153,5 +160,37 @@ def markdown_to_blocks(markdown):
     return filtered_blocks
 
 
+def extract_markdown_headings(text):
+    matches = re.findall(r"^(#{1,6}\s)(.*)", text)
+    return matches
+
+
+def extract_markdown_code_blocks(text):
+    matches = re.findall(r"^(```)(.*)(```)", text)
+    return matches
+
+
+def extract_markdown_quote_line(text):
+    matches = re.findall(r"^(>)(.*)", text)
+    return matches
+
+
 def block_to_block_type(block):
-    pass
+    lines = block.split("\n")
+
+    headings = extract_markdown_headings(block)
+    if headings and len(headings[0]) == 2:
+        return block_type_heading
+    code_blocks = extract_markdown_code_blocks(block)
+    if code_blocks and len(code_blocks[0]) == 3:
+        return block_type_code
+
+    num_quote_lines = 0
+    for line in lines:
+        quote_line = extract_markdown_quote_line(line)
+        if quote_line and len(quote_line[0]) == 2:
+            num_quote_lines += 1
+    if num_quote_lines == len(lines):
+        return block_type_quote
+
+    return None

@@ -1,7 +1,7 @@
 import unittest
 
 from leafnode import LeafNode
-from textnode import TextNode, extract_markdown_links, markdown_to_blocks, split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_textnodes
+from textnode import TextNode, block_to_block_type, extract_markdown_links, markdown_to_blocks, split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_textnodes
 from textnode import extract_markdown_images
 from textnode import text_node_to_html_node
 
@@ -11,6 +11,13 @@ text_type_italic = "italic"
 text_type_code = "code"
 text_type_link = "link"
 text_type_image = "image"
+
+block_type_paragraph = "paragraph"
+block_type_heading = "heading"
+block_type_code = "code"
+block_type_quote = "quote"
+block_type_unordered_list = "unordered_list"
+block_type_ordered_list = "ordered_list"
 
 
 class TestTextNode(unittest.TestCase):
@@ -326,7 +333,8 @@ This is the same paragraph on a new line
                          ])
 
     def test_markdown_to_blocks_multiple_newlines_blank_spaces(self):
-        result = markdown_to_blocks(""" This is **bolded** paragraph
+        result = markdown_to_blocks(
+            """ This is **bolded** paragraph
 
 
      This is another paragraph with *italic* text and `code` here
@@ -337,14 +345,33 @@ This is the same paragraph on a new line
 
 
 """)
-        self.assertEqual(result,
-                         [
-                             "This is **bolded** paragraph",
-                             "This is another paragraph with *italic* text and `code` here\n This is the same paragraph on a new line",
-                             "* This is a list\n * with items",
-                         ])
+        self.assertEqual(
+            result,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with *italic* text and `code` here\n This is the same paragraph on a new line",
+                "* This is a list\n * with items",
+            ])
 
         pass
+
+    def test_block_to_block_type_heading(self):
+        result = block_to_block_type("# This is a heading")
+        self.assertEqual(result, block_type_heading)
+
+    def test_block_to_block_type_code_block(self):
+        result = block_to_block_type("```This is a code block.```")
+        self.assertEqual(result, block_type_code)
+
+    def test_block_to_block_type_quote(self):
+        result = block_to_block_type(
+            ">This is a quote block\n>This is the second line in a quote block.")
+        self.assertEqual(result, block_type_quote)
+
+    def test_block_to_block_type_not_quote(self):
+        result = block_to_block_type(
+            ">This is a quote block\nThis is the second line in a quote block.")
+        self.assertEqual(result, None)
 
 
 if __name__ == "__main__":
