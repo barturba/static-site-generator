@@ -301,9 +301,49 @@ This is the same paragraph on a new line
 * with items""")
         self.assertEqual(result,
                          [
-                             "This is **bolded** paragraph\n",
-                             "This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line\n",
-                             "* This is a list\n* with items\n""",
+                             "This is **bolded** paragraph",
+                             "This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line",
+                             "* This is a list\n* with items""",
+                         ])
+
+    def test_markdown_to_blocks_multiple_newlines(self):
+        result = markdown_to_blocks("""This is **bolded** paragraph
+
+
+This is another paragraph with *italic* text and `code` here
+This is the same paragraph on a new line
+
+* This is a list
+* with items
+
+
+""")
+        self.assertEqual(result,
+                         [
+                             "This is **bolded** paragraph",
+                             "This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line",
+                             "* This is a list\n* with items",
+                         ])
+
+        pass
+
+    def test_markdown_to_blocks_multiple_newlines_blank_spaces(self):
+        result = markdown_to_blocks(""" This is **bolded** paragraph
+
+
+     This is another paragraph with *italic* text and `code` here
+ This is the same paragraph on a new line
+
+     * This is a list
+ * with items
+
+
+""")
+        self.assertEqual(result,
+                         [
+                             "This is **bolded** paragraph",
+                             "This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line",
+                             "* This is a list\n* with items",
                          ])
 
         pass
