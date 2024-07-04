@@ -142,31 +142,38 @@ def text_to_textnodes(text):
 
 
 def markdown_to_blocks(markdown):
-    # stripped_lines = re.sub(r'\n+', '\n\n', markdown).strip()
 
-    lines = markdown.split("\n")
-    blocks = []
-    current_block = ""
-
-    for line in lines:
-        # strip leading and trailing whitespace from blocks.
-        line = line.strip()
-        if line == "":
-            blocks.append(current_block)
-            current_block = ""
-        else:
-            current_block += line + "\n"
-    blocks.append(current_block)
-
-    # strip empty blocks
-    non_empty_blocks = []
+    blocks = markdown.split("\n\n")
+    filtered_blocks = []
     for block in blocks:
-        if block != "":
-            non_empty_blocks.append(block)
+        block = block.strip()
+        if block == "":
+            continue
+        filtered_blocks.append(block)
+    return filtered_blocks
 
-    # strip leading and trailing newlines from blocks.
-    stripped_blocks = []
-    for block in non_empty_blocks:
-        stripped_blocks.append(block.strip())
+    # blocks = []
+    # current_block = ""
 
-    return stripped_blocks
+    # for line in lines:
+    #     # strip leading and trailing whitespace from blocks.
+    #     line = line.strip()
+    #     if line == "":
+    #         blocks.append(current_block)
+    #         current_block = ""
+    #     else:
+    #         current_block += line + "\n"
+    # blocks.append(current_block)
+
+    # # strip empty blocks
+    # non_empty_blocks = []
+    # for block in blocks:
+    #     if block != "":
+    #         non_empty_blocks.append(block)
+
+    # # strip leading and trailing newlines from blocks.
+    # stripped_blocks = []
+    # for block in non_empty_blocks:
+    #     stripped_blocks.append(block.strip())
+
+    # return stripped_blocks
