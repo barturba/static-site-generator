@@ -1,7 +1,7 @@
 import unittest
 
 from leafnode import LeafNode
-from textnode import TextNode, extract_markdown_links, split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_textnodes
+from textnode import TextNode, extract_markdown_links, markdown_to_blocks, split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_textnodes
 from textnode import extract_markdown_images
 from textnode import text_node_to_html_node
 
@@ -95,6 +95,22 @@ class TestTextNode(unittest.TestCase):
                 TextNode("This is text with a ", text_type_text),
                 TextNode("bold", text_type_bold),
                 TextNode(" word", text_type_text),
+            ]
+        )
+
+    def test_split_nodes_bold_multiple(self):
+
+        node = TextNode(
+            "This is text with a **bold** word and **another**. More text after.", text_type_text)
+        new_nodes = split_nodes_delimiter([node], "**", text_type_bold)
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with a ", text_type_text),
+                TextNode("bold", text_type_bold),
+                TextNode(" word and ", text_type_text),
+                TextNode("another", text_type_bold),
+                TextNode(". More text after.", text_type_text),
             ]
         )
 
@@ -245,6 +261,8 @@ class TestTextNode(unittest.TestCase):
                                       "https://boot.dev"),
                          ])
 
+    def test_split_nodes_multiple(self):
+
         new_nodes = text_to_textnodes(
             "This is **text** with an *italic* word and a `code block` and an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and a [link](https://boot.dev). And *even* **more** text and links [link](https://boot.dev) ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png)")
         self.assertEqual(new_nodes,
@@ -268,9 +286,22 @@ class TestTextNode(unittest.TestCase):
                              TextNode(" text and links ", text_type_text),
                              TextNode("link", text_type_link,
                                       "https://boot.dev"),
+                             TextNode(" ", text_type_text),
                              TextNode(
                                  "image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
                          ])
+
+    # def test_markdown_to_blocks(self):
+    #     result = markdown_to_blocks(""" This is **bolded** paragraph
+
+    #         This is another paragraph with *italic* text and `code` here
+    #         This is the same paragraph on a new line
+
+    #         * This is a list
+    #         * with items""")
+
+    #     print(result)
+    #     pass
 
 
 if __name__ == "__main__":
