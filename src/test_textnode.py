@@ -291,17 +291,22 @@ class TestTextNode(unittest.TestCase):
                                  "image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
                          ])
 
-    # def test_markdown_to_blocks(self):
-    #     result = markdown_to_blocks(""" This is **bolded** paragraph
+    def test_markdown_to_blocks(self):
+        result = markdown_to_blocks("""This is **bolded** paragraph
 
-    #         This is another paragraph with *italic* text and `code` here
-    #         This is the same paragraph on a new line
+This is another paragraph with *italic* text and `code` here
+This is the same paragraph on a new line
 
-    #         * This is a list
-    #         * with items""")
+* This is a list
+* with items""")
+        self.assertEqual(result,
+                         [
+                             "This is **bolded** paragraph\n",
+                             "This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line\n",
+                             "* This is a list\n* with items\n""",
+                         ])
 
-    #     print(result)
-    #     pass
+        pass
 
 
 if __name__ == "__main__":

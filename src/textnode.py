@@ -142,4 +142,16 @@ def text_to_textnodes(text):
 
 
 def markdown_to_blocks(markdown):
-    markdown.split("\n")
+    lines = markdown.split("\n")
+    blocks = []
+    current_block = ""
+
+    for line in lines:
+        if line == "":
+            blocks.append(current_block)
+            current_block = ""
+        else:
+            current_block += line + "\n"
+    blocks.append(current_block)
+
+    return blocks
