@@ -371,7 +371,17 @@ This is the same paragraph on a new line
     def test_block_to_block_type_not_quote(self):
         result = block_to_block_type(
             ">This is a quote block\nThis is the second line in a quote block.")
-        self.assertEqual(result, None)
+        self.assertEqual(result, block_type_paragraph)
+
+    def test_block_to_block_type_unordered_list(self):
+        result = block_to_block_type(
+            "* This is a line in an unordered list\n* This is the second line in an unordered list.")
+        self.assertEqual(result, block_type_unordered_list)
+
+    def test_block_to_block_type_ordered_list(self):
+        result = block_to_block_type(
+            "1. This is a line in an ordered list\n2. This is the second line in an ordered list.\n3. This is the third line.")
+        self.assertEqual(result, block_type_ordered_list)
 
 
 if __name__ == "__main__":

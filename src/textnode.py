@@ -175,6 +175,15 @@ def extract_markdown_quote_line(text):
     return matches
 
 
+def extract_markdown_ul_line(text):
+    matches = re.findall(r"^(-|\*)(.*)", text)
+    return matches
+
+def extract_markdown_ol_line(text):
+    matches = re.findall(r"^(\d)\.\s(.*)", text)
+    return matches
+
+
 def block_to_block_type(block):
     lines = block.split("\n")
 
@@ -193,4 +202,30 @@ def block_to_block_type(block):
     if num_quote_lines == len(lines):
         return block_type_quote
 
-    return None
+    num_ul_lines = 0
+    for line in lines:
+        ul_line = extract_markdown_ul_line(line)
+        if ul_line and len(ul_line[0]) == 2:
+            num_ul_lines += 1
+    if num_ul_lines == len(lines):
+        return block_type_unordered_list
+
+    # check if numbers are incrementing properly
+    num_ol_lines = 0
+    last_num = 0
+    increment = False
+    for line in lines:
+        ol_line = extract_markdown_ol_line(line)
+        if ol_line and len(ol_line[0]) == 2:
+            current_num = int(ol_line[0][0])
+            if current_num == last_num + 1:
+                last_num = current_num 
+                increment = True
+                num_ol_lines += 1
+            else:
+                increment = False
+                break
+    if increment:
+        if num_ol_lines == len(lines):
+            return block_type_ordered_list
+    return block_type_paragraph
