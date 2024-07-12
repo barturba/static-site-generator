@@ -19,15 +19,15 @@ block_type_olist = "ordered_list"
 
 
 class TextNode:
-    def __init__(self, text=None, text_type=None, url=None):
+    def __init__(self, text, text_type, url=None):
         self.text = text
         self.text_type = text_type
         self.url = url
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other):
         return (
-            self.text == other.text
-            and self.text_type == other.text_type
+            self.text_type == other.text_type
+            and self.text == other.text
             and self.url == other.url
         )
 
@@ -35,22 +35,20 @@ class TextNode:
         return f"TextNode({self.text}, {self.text_type}, {self.url})"
 
 
-def text_node_to_html_node(node):
-    match node.text_type:
-        case "text":
-            return LeafNode(None, node.text)
-        case "bold":
-            return LeafNode("b", node.text)
-        case "italic":
-            return LeafNode("i", node.text)
-        case "code":
-            return LeafNode("code", node.text)
-        case "link":
-            return LeafNode("a", node.text, None, {"href": node.url})
-        case "image":
-            return LeafNode("img", "", None, {"src": node.url, "alt": node.text})
-        case _:
-            raise ValueError("Invalid text_type")
+def text_node_to_html_node(text_node):
+    if text_node.text_type == text_type_text:
+        return LeafNode(None, text_node.text)
+    if text_node.text_type == text_type_bold:
+        return LeafNode("b", text_node.text)
+    if text_node.text_type == text_type_italic:
+        return LeafNode("i", text_node.text)
+    if text_node.text_type == text_type_code:
+        return LeafNode("code", text_node.text)
+    if text_node.text_type == text_type_link:
+        return LeafNode("a", text_node.text, {"href": text_node.url})
+    if text_node.text_type == text_type_image:
+        return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
+    raise ValueError(f"Invalid text type: {text_node.text_type}")
 
 
 # @input_value_printer
@@ -60,21 +58,18 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         if old_node.text_type != text_type_text:
             new_nodes.append(old_node)
             continue
-
+        split_nodes = []
         parts = old_node.text.split(delimiter)
-        if len(parts) == 1:
-            if len(old_nodes) == 1:
-                raise ValueError("Missing delimiter")
-            new_nodes.append(old_node)
-            continue
-            # raise ValueError("Missing delimiter")
-        if len(parts) == 2:
-            raise ValueError("Invalid Markdown syntax")
-        for i in range(0, len(parts)):
-            if i == 0 or i % 2 == 0:
-                new_nodes.append(TextNode(parts[i], text_type_text))
+        if len(parts) % 2 == 0:
+            raise ValueError("Invalid markdown, formatted section not closed")
+        for i in range(len(parts)):
+            if parts[i] == "":
+                continue
+            if i % 2 == 0:
+                split_nodes.append(TextNode(parts[i], text_type_text))
             else:
-                new_nodes.append(TextNode(parts[i], text_type))
+                split_nodes.append(TextNode(parts[i], text_type))
+        new_nodes.extend(split_nodes)
     return new_nodes
 
 
@@ -144,58 +139,3 @@ def text_to_textnodes(text):
     link_nodes = split_nodes_link(image_nodes)
 
     return link_nodes
-
-
-def markdown_to_blocks(markdown):
-    blocks = markdown.split("\n\n")
-    filtered_blocks = []
-    for block in blocks:
-        block = block.strip()
-        if block == "":
-            continue
-        filtered_blocks.append(block)
-    return filtered_blocks
-
-
-def block_to_block_type(block):
-    lines = block.split("\n")
-
-    if (
-        block.startswith("# ")
-        or block.startswith("## ")
-        or block.startswith("### ")
-        or block.startswith("#### ")
-        or block.startswith("##### ")
-        or block.startswith("###### ")
-    ):
-        return block_type_heading
-
-    print(f"checking if len(lines) > 1: {len(lines) > 1}")
-    if len(lines) > 1:
-        var = lines[0].startswith("```") and lines[-1].startswith("```")
-        print(f" and lines[0].startswith(...) and lines[-1].startswith(...) = {var}")
-    if len(lines) > 1 and lines[0].startswith("```") and lines[-1].startswith("```"):
-        return block_type_code
-    if block.startswith(">"):
-        for line in lines:
-            if not line.startswith(">"):
-                return block_type_paragraph
-        return block_type_quote
-    if block.startswith("* "):
-        for line in lines:
-            if not line.startswith("* "):
-                return block_type_paragraph
-        return block_type_ulist
-    if block.startswith("- "):
-        for line in lines:
-            if not line.startswith("- "):
-                return block_type_paragraph
-        return block_type_ulist
-    if block.startswith("1. "):
-        i = 1
-        for line in lines:
-            if not line.startswith("f{i}. "):
-                return block_type_paragraph
-            i += 1
-        return block_type_olist
-    return block_type_paragraph

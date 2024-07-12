@@ -1,16 +1,7 @@
 import unittest
 
-from textnode import (
-    TextNode,
-    block_to_block_type,
-    extract_markdown_links,
-    markdown_to_blocks,
-    split_nodes_delimiter,
-    split_nodes_image,
-    split_nodes_link,
-    text_to_textnodes,
-)
 from markdown_blocks import block_to_block_type, markdown_to_blocks
+
 
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
