@@ -25,7 +25,11 @@ class TextNode:
         self.url = url
 
     def __eq__(self, other) -> bool:
-        return self.text == other.text and self.text_type == other.text_type and self.url == other.url
+        return (
+            self.text == other.text
+            and self.text_type == other.text_type
+            and self.url == other.url
+        )
 
     def __repr__(self) -> str:
         return f"TextNode({self.text}, {self.text_type}, {self.url})"
@@ -97,8 +101,7 @@ def split_nodes_image(old_nodes):
         current_text = old_node.text
         for i in range(0, len(image_tups)):
             image_tup = image_tups[i]
-            parts = current_text.split(
-                f"![{image_tup[0]}]({image_tup[1]})")
+            parts = current_text.split(f"![{image_tup[0]}]({image_tup[1]})")
             new_nodes.append(TextNode(parts[0], text_type_text))
             new_nodes.append(
                 TextNode(image_tup[0], text_type_image, image_tup[1]))
@@ -137,10 +140,8 @@ def split_nodes_link(old_nodes):
 
 def text_to_textnodes(text):
     node = TextNode(text, text_type_text)
-    bold_nodes = split_nodes_delimiter(
-        [node], "**", text_type_bold)
-    italic_nodes = split_nodes_delimiter(
-        bold_nodes, "*", text_type_italic)
+    bold_nodes = split_nodes_delimiter([node], "**", text_type_bold)
+    italic_nodes = split_nodes_delimiter(bold_nodes, "*", text_type_italic)
     code_nodes = split_nodes_delimiter(italic_nodes, "`", text_type_code)
     image_nodes = split_nodes_image(code_nodes)
     link_nodes = split_nodes_link(image_nodes)
@@ -149,7 +150,6 @@ def text_to_textnodes(text):
 
 
 def markdown_to_blocks(markdown):
-
     blocks = markdown.split("\n\n")
     filtered_blocks = []
     for block in blocks:
@@ -158,6 +158,7 @@ def markdown_to_blocks(markdown):
             continue
         filtered_blocks.append(block)
     return filtered_blocks
+
 
 def block_to_block_type(block):
     lines = block.split("\n")
@@ -175,7 +176,8 @@ def block_to_block_type(block):
     print(f"checking if len(lines) > 1: {len(lines) > 1}")
     if len(lines) > 1:
         var = lines[0].startswith("```") and lines[-1].startswith("```")
-        print(f" and lines[0].startswith(...) and lines[-1].startswith(...) = {var}")
+        print(
+            f" and lines[0].startswith(...) and lines[-1].startswith(...) = {var}")
     if len(lines) > 1 and lines[0].startswith("```") and lines[-1].startswith("```"):
         return block_type_code
     if block.startswith(">"):
