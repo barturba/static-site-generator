@@ -57,7 +57,7 @@ def block_to_block_type(block):
     if block.startswith("1. "):
         i = 1
         for line in lines:
-            if not line.startswith("f{i}. "):
+            if not line.startswith(f"{i}. "):
                 return block_type_paragraph
             i += 1
         return block_type_olist
