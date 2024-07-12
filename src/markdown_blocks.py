@@ -33,10 +33,8 @@ def block_to_block_type(block):
     ):
         return block_type_heading
 
-    print(f"checking if len(lines) > 1: {len(lines) > 1}")
     if len(lines) > 1:
         var = lines[0].startswith("```") and lines[-1].startswith("```")
-        print(f" and lines[0].startswith(...) and lines[-1].startswith(...) = {var}")
     if len(lines) > 1 and lines[0].startswith("```") and lines[-1].startswith("```"):
         return block_type_code
     if block.startswith(">"):
