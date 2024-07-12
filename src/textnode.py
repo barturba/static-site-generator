@@ -1,6 +1,6 @@
 import re
 
-from leafnode import LeafNode
+from htmlnode import LeafNode
 
 
 text_type_text = "text"
@@ -103,8 +103,7 @@ def split_nodes_image(old_nodes):
             image_tup = image_tups[i]
             parts = current_text.split(f"![{image_tup[0]}]({image_tup[1]})")
             new_nodes.append(TextNode(parts[0], text_type_text))
-            new_nodes.append(
-                TextNode(image_tup[0], text_type_image, image_tup[1]))
+            new_nodes.append(TextNode(image_tup[0], text_type_image, image_tup[1]))
             current_text = parts[1]
         if len(current_text) > 0:
             new_nodes.append(TextNode(current_text, text_type_text))
@@ -124,12 +123,10 @@ def split_nodes_link(old_nodes):
 
         original_text = node.text
         for link_tup in links:
-            split_text = original_text.split(
-                f"[{link_tup[0]}]({link_tup[1]})", 1)
+            split_text = original_text.split(f"[{link_tup[0]}]({link_tup[1]})", 1)
             new_nodes.append(TextNode(split_text[0], text_type_text))
 
-            new_nodes.append(
-                TextNode(link_tup[0], text_type_link, link_tup[1]))
+            new_nodes.append(TextNode(link_tup[0], text_type_link, link_tup[1]))
 
             original_text = split_text[1]
         if original_text:
@@ -176,8 +173,7 @@ def block_to_block_type(block):
     print(f"checking if len(lines) > 1: {len(lines) > 1}")
     if len(lines) > 1:
         var = lines[0].startswith("```") and lines[-1].startswith("```")
-        print(
-            f" and lines[0].startswith(...) and lines[-1].startswith(...) = {var}")
+        print(f" and lines[0].startswith(...) and lines[-1].startswith(...) = {var}")
     if len(lines) > 1 and lines[0].startswith("```") and lines[-1].startswith("```"):
         return block_type_code
     if block.startswith(">"):

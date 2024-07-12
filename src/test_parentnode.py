@@ -1,7 +1,6 @@
 import unittest
 
-from parentnode import ParentNode
-from leafnode import LeafNode
+from htmlnode import LeafNode, ParentNode
 
 
 class TestParentNode(unittest.TestCase):
@@ -17,7 +16,7 @@ class TestParentNode(unittest.TestCase):
         )
         self.assertEqual(
             node.to_html(),
-            "<p><b>bold text</b>normal text<i>italic text</i>normal text</p>"
+            "<p><b>bold text</b>normal text<i>italic text</i>normal text</p>",
         )
 
     def test_no_tag(self):
@@ -51,7 +50,8 @@ class TestParentNode(unittest.TestCase):
         )
         self.assertEqual(
             node.to_html(),
-            '<p class="paragraph"><b>bold text</b>normal text<i>italic text</i>normal text</p>')
+            '<p class="paragraph"><b>bold text</b>normal text<i>italic text</i>normal text</p>',
+        )
 
     def test_nested_parent_nodes(self):
         node = ParentNode(
@@ -67,11 +67,11 @@ class TestParentNode(unittest.TestCase):
                     ],
                     {"class": "paragraph"},
                 )
-            ]
+            ],
         )
         self.assertEqual(
             node.to_html(),
-            '<div><p class="paragraph"><b>bold text</b>normal text<i>italic text</i>normal text</p></div>'
+            '<div><p class="paragraph"><b>bold text</b>normal text<i>italic text</i>normal text</p></div>',
         )
 
     def test_multiple_levels_of_nesting(self):
@@ -91,13 +91,13 @@ class TestParentNode(unittest.TestCase):
                             ],
                             {"class": "paragraph"},
                         )
-                    ]
+                    ],
                 )
-            ]
+            ],
         )
         self.assertEqual(
             node.to_html(),
-            '<body><div><p class="paragraph"><b>bold text</b>normal text<i>italic text</i>normal text</p></div></body>'
+            '<body><div><p class="paragraph"><b>bold text</b>normal text<i>italic text</i>normal text</p></div></body>',
         )
 
 
