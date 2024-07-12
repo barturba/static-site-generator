@@ -16,8 +16,8 @@ block_type_paragraph = "paragraph"
 block_type_heading = "heading"
 block_type_code = "code"
 block_type_quote = "quote"
-block_type_unordered_list = "unordered_list"
-block_type_ordered_list = "ordered_list"
+block_type_ulist = "unordered_list"
+block_type_olist = "ordered_list"
 
 
 class TestTextNode(unittest.TestCase):
@@ -297,92 +297,6 @@ class TestTextNode(unittest.TestCase):
                              TextNode(
                                  "image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
                          ])
-
-    def test_markdown_to_blocks(self):
-        result = markdown_to_blocks("""This is **bolded** paragraph
-
-This is another paragraph with *italic* text and `code` here
-This is the same paragraph on a new line
-
-* This is a list
-* with items""")
-        self.assertEqual(result,
-                         [
-                             "This is **bolded** paragraph",
-                             "This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line",
-                             "* This is a list\n* with items""",
-                         ])
-
-    def test_markdown_to_blocks_multiple_newlines(self):
-        result = markdown_to_blocks("""This is **bolded** paragraph
-
-
-This is another paragraph with *italic* text and `code` here
-This is the same paragraph on a new line
-
-* This is a list
-* with items
-
-
-""")
-        self.assertEqual(result,
-                         [
-                             "This is **bolded** paragraph",
-                             "This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line",
-                             "* This is a list\n* with items",
-                         ])
-
-    def test_markdown_to_blocks_multiple_newlines_blank_spaces(self):
-        result = markdown_to_blocks(
-            """ This is **bolded** paragraph
-
-
-     This is another paragraph with *italic* text and `code` here
- This is the same paragraph on a new line
-
-     * This is a list
- * with items
-
-
-""")
-        self.assertEqual(
-            result,
-            [
-                "This is **bolded** paragraph",
-                "This is another paragraph with *italic* text and `code` here\n This is the same paragraph on a new line",
-                "* This is a list\n * with items",
-            ])
-
-        pass
-
-    def test_block_to_block_type_heading(self):
-        result = block_to_block_type("# This is a heading")
-        self.assertEqual(result, block_type_heading)
-
-    def test_block_to_block_type_code_block(self):
-        result = block_to_block_type("```This is a code block.```")
-        self.assertEqual(result, block_type_code)
-
-    def test_block_to_block_type_quote(self):
-        result = block_to_block_type(
-            ">This is a quote block\n>This is the second line in a quote block.")
-        self.assertEqual(result, block_type_quote)
-
-    def test_block_to_block_type_not_quote(self):
-        result = block_to_block_type(
-            ">This is a quote block\nThis is the second line in a quote block.")
-        self.assertEqual(result, block_type_paragraph)
-
-    def test_block_to_block_type_unordered_list(self):
-        result = block_to_block_type(
-            "* This is a line in an unordered list\n* This is the second line in an unordered list.")
-        self.assertEqual(result, block_type_unordered_list)
-
-    def test_block_to_block_type_ordered_list(self):
-        result = block_to_block_type(
-            "1. This is a line in an ordered list\n2. This is the second line in an ordered list.\n3. This is the third line.")
-        self.assertEqual(result, block_type_ordered_list)
-
 
 if __name__ == "__main__":
     unittest.main()

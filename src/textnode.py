@@ -14,8 +14,8 @@ block_type_paragraph = "paragraph"
 block_type_heading = "heading"
 block_type_code = "code"
 block_type_quote = "quote"
-block_type_unordered_list = "unordered_list"
-block_type_ordered_list = "ordered_list"
+block_type_ulist = "unordered_list"
+block_type_olist = "ordered_list"
 
 
 class TextNode:
@@ -159,73 +159,45 @@ def markdown_to_blocks(markdown):
         filtered_blocks.append(block)
     return filtered_blocks
 
-
-def extract_markdown_headings(text):
-    matches = re.findall(r"^(#{1,6}\s)(.*)", text)
-    return matches
-
-
-def extract_markdown_code_blocks(text):
-    matches = re.findall(r"^(```)(.*)(```)", text)
-    return matches
-
-
-def extract_markdown_quote_line(text):
-    matches = re.findall(r"^(>)(.*)", text)
-    return matches
-
-
-def extract_markdown_ul_line(text):
-    matches = re.findall(r"^(-|\*)(.*)", text)
-    return matches
-
-def extract_markdown_ol_line(text):
-    matches = re.findall(r"^(\d)\.\s(.*)", text)
-    return matches
-
-
 def block_to_block_type(block):
     lines = block.split("\n")
 
-    headings = extract_markdown_headings(block)
-    if headings and len(headings[0]) == 2:
+    if (
+        block.startswith("# ")
+        or block.startswith("## ")
+        or block.startswith("### ")
+        or block.startswith("#### ")
+        or block.startswith("##### ")
+        or block.startswith("###### ")
+    ):
         return block_type_heading
-    code_blocks = extract_markdown_code_blocks(block)
-    if code_blocks and len(code_blocks[0]) == 3:
+
+    print(f"checking if len(lines) > 1: {len(lines) > 1}")
+    if len(lines) > 1:
+        var = lines[0].startswith("```") and lines[-1].startswith("```")
+        print(f" and lines[0].startswith(...) and lines[-1].startswith(...) = {var}")
+    if len(lines) > 1 and lines[0].startswith("```") and lines[-1].startswith("```"):
         return block_type_code
-
-    num_quote_lines = 0
-    for line in lines:
-        quote_line = extract_markdown_quote_line(line)
-        if quote_line and len(quote_line[0]) == 2:
-            num_quote_lines += 1
-    if num_quote_lines == len(lines):
+    if block.startswith(">"):
+        for line in lines:
+            if not line.startswith(">"):
+                return block_type_paragraph
         return block_type_quote
-
-    num_ul_lines = 0
-    for line in lines:
-        ul_line = extract_markdown_ul_line(line)
-        if ul_line and len(ul_line[0]) == 2:
-            num_ul_lines += 1
-    if num_ul_lines == len(lines):
-        return block_type_unordered_list
-
-    # check if numbers are incrementing properly
-    num_ol_lines = 0
-    last_num = 0
-    increment = False
-    for line in lines:
-        ol_line = extract_markdown_ol_line(line)
-        if ol_line and len(ol_line[0]) == 2:
-            current_num = int(ol_line[0][0])
-            if current_num == last_num + 1:
-                last_num = current_num 
-                increment = True
-                num_ol_lines += 1
-            else:
-                increment = False
-                break
-    if increment:
-        if num_ol_lines == len(lines):
-            return block_type_ordered_list
+    if block.startswith("* "):
+        for line in lines:
+            if not line.startswith("* "):
+                return block_type_paragraph
+        return block_type_ulist
+    if block.startswith("- "):
+        for line in lines:
+            if not line.startswith("- "):
+                return block_type_paragraph
+        return block_type_ulist
+    if block.startswith("1. "):
+        i = 1
+        for line in lines:
+            if not line.startswith("f{i}. "):
+                return block_type_paragraph
+            i += 1
+        return block_type_olist
     return block_type_paragraph
