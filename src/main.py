@@ -23,8 +23,13 @@ def copy_static(source, destination):
 
 
 def extract_title(markdown):
+    # extract the title
+    # if there is no title, raise an exception
     if markdown.startswith("# "):
         return markdown.strip("# ")
+    else:
+        raise ValueError("Title doesn't exist")
+    # strip leading # and any leading or trailing whitespace
 
 
 main()
