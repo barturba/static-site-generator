@@ -5,7 +5,17 @@ from textnode import TextNode
 
 
 def main():
+    delete_and_recreate_dir("public")
     copy_static("static", "public")
+    generate_page("content/index.md", "template.html", "public/index.html")
+
+
+def delete_and_recreate_dir(directory):
+    print("delete_and_recreate_dir:")
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
+    if not os.path.exists(directory):
+        os.mkdir(directory)
 
 
 def copy_static(source, destination):
@@ -69,17 +79,17 @@ def generate_page(from_path, template_path, dest_path):
     # print(f"DEBUG:  template_string: {template_string}")
 
     output_file_name_parts = from_path.split(".md")
-    output_file_name = ""
+    output_file_dirs = ""
     if len(output_file_name_parts) == 2:
-        output_file_name = output_file_name_parts[0] + ".html"
+        output_file_dirs = output_file_name_parts[0]
     # print(f"DEBUG:  output_file_name: {output_file_name}")
 
     # TODO: get output dir name
     # TODO: make all ancestor directories recursively up to the output path
-    os.makedirs(dest_path, exist_ok=True)
+    os.makedirs(output_file_dirs, exist_ok=True)
 
     # TODO: write the output file out to the dest_path
-    f = open(output_file_name, "a")
+    f = open(dest_path, "a")
     f.write(template_string)
     f.close()
 
