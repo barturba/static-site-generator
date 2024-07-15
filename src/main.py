@@ -22,4 +22,9 @@ def copy_static(source, destination):
             copy_static(src_item, dst_item)
 
 
+def extract_title(markdown):
+    if markdown.startswith("# "):
+        return markdown.strip("# ")
+
+
 main()
