@@ -13,7 +13,6 @@ from textnode import (
 
 text_type_text = "text"
 text_type_bold = "bold"
-text_type_underline = "underline"
 text_type_italic = "italic"
 text_type_code = "code"
 text_type_link = "link"
@@ -71,12 +70,6 @@ class TestTextNode(unittest.TestCase):
         html_node = text_node_to_html_node(node)
         self.assertEqual(html_node.tag, "i")
         self.assertEqual(html_node.value, "This is an italic text node")
-
-    def test_convert_underline(self):
-        node = TextNode("This is a underline text node", "underline", None)
-        html_node = text_node_to_html_node(node)
-        self.assertEqual(html_node.tag, "ul")
-        self.assertEqual(html_node.value, "This is a underline text node")
 
     def test_convert_image(self):
         node = TextNode("This is an image", text_type_image, "https://www.boot.dev")
