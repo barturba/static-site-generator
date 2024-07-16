@@ -1,7 +1,8 @@
 import re
 
 from htmlnode import ParentNode
-from textnode import text_node_to_html_node, text_to_textnodes
+from inline_markdown import text_to_textnodes
+from textnode import text_node_to_html_node
 
 
 block_type_paragraph = "paragraph"

@@ -6,10 +6,10 @@
 
 ## Reasons I like Tolkien
 
-- You can spend years studying the legendarium and still not understand its depths
-- It can be enjoyed by children and adults alike
-- Disney _didn't ruin it_
-- It created an entirely new genre of fantasy
+* You can spend years studying the legendarium and still not understand its depths
+* It can be enjoyed by children and adults alike
+* Disney *didn't ruin it*
+* It created an entirely new genre of fantasy
 
 ## My favorite characters (in order)
 
@@ -30,3 +30,4 @@ func main(){
     fmt.Println("Hello, World!")
 }
 ```
+ø
